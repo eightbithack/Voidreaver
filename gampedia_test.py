@@ -76,6 +76,9 @@ class Match_Set:
 
 	def get_column(self, col):
 		return [x[col] for x in self.match_list]
+
+	def get_Game_Count_by_Patch(self, patch):
+		return len([x for x in self.match_list if x[4]==patch])
 	              
 	def get_BBP1_Raw(self, patch=None, team=None):
 		if patch == None:
@@ -146,22 +149,33 @@ class Match_Set:
 			else:
 				return [x[11] for x in self.match_list if x[1] == team and x[4] == patch]
 
-	def get_Champ_Percent(self, champ, patch=None, team=None):
+	def get_Champ_Percent(self, champ, patch=None, team=None, ignore_bans=None, role=None):
 		count = 0
 		if patch == None:
 			if team == None:
 				for match in self.match_list:
 					found = False
-					for slot in (self.ban_pool + self.s_pick_pool):
+					bans = self.ban_pool
+					if ignore_bans != None:
+						bans = []
+					for slot in (bans + self.s_pick_pool):
 						if match[slot] == champ:
-							count += 1
+							if (slot not in self.ban_pool and role != None and match[self.pick_dict[slot]] == role) or role==None:
+								count += 1
+							elif slot in self.ban_pool and ignore_bans is None:
+								count += 1
 							found = True
 							break
 					if not found:
 						for slot in self.d_pick_pool:
-							champs = match[slot].split(",")
+							champs = match[slot].split(", ")
 							if champs[0] == champ or champs[1] == champ:
-								count += 1
+								if champs[0] == champ and ((role != None and match[self.pick_dict[str(slot)+".1"]] == role) or role==None):
+									count += 1
+								elif (role != None and match[self.pick_dict[str(slot)+".2"]] == role) or role==None:
+									count += 1
+								elif slot in self.ban_pool and ignore_bans is None:
+									count += 1
 								found = True
 								break
 				return (count, len(self.match_list))
@@ -169,16 +183,27 @@ class Match_Set:
 				s_match_list = [x for x in self.s_match_history if x[1] == team or x[2] == team]
 				for match in s_match_list:
 					found = False
-					for slot in (self.ban_pool + self.s_pick_pool):
+					bans = self.ban_pool
+					if ignore_bans != None:
+						bans = []
+					for slot in (bans + self.s_pick_pool):
 						if match[slot] == champ:
-							count += 1
+							if (slot not in self.ban_pool and role != None and match[self.pick_dict[slot]] == role) or role==None:
+								count += 1
+							elif slot in self.ban_pool and ignore_bans is None:
+								count += 1
 							found = True
 							break
 					if not found:
 						for slot in self.d_pick_pool:
-							champs = match[slot].split(",")
+							champs = match[slot].split(", ")
 							if champs[0] == champ or champs[1] == champ:
-								count += 1
+								if champs[0] == champ and ((role != None and match[self.pick_dict[str(slot)+".1"]] == role) or role==None):
+									count += 1
+								elif (role != None and match[self.pick_dict[str(slot)+".2"]] == role) or role==None:
+									count += 1
+								elif slot in self.ban_pool and ignore_bans is None:
+									count += 1
 								found = True
 								break
 				return (count, len(s_match_list))
@@ -187,16 +212,27 @@ class Match_Set:
 				s_match_list = [x for x in self.match_list if x[4] == patch]
 				for match in s_match_list:
 					found = False
-					for slot in (self.ban_pool + self.s_pick_pool):
+					bans = self.ban_pool
+					if ignore_bans != None:
+						bans = []
+					for slot in (bans + self.s_pick_pool):
 						if match[slot] == champ:
-							count += 1
+							if (slot not in self.ban_pool and role != None and match[self.pick_dict[slot]] == role) or role==None:
+								count += 1
+							elif slot in self.ban_pool and ignore_bans is None:
+								count += 1
 							found = True
 							break
 					if not found:
 						for slot in self.d_pick_pool:
-							champs = match[slot].split(",")
+							champs = match[slot].split(", ")
 							if champs[0] == champ or champs[1] == champ:
-								count += 1
+								if champs[0] == champ and ((role != None and match[self.pick_dict[str(slot)+".1"]] == role) or role==None):
+									count += 1
+								elif champs[1] == champ and (role != None and match[self.pick_dict[str(slot)+".2"]] == role) or role==None:
+									count += 1
+								elif slot in self.ban_pool and ignore_bans is None:
+									count += 1
 								found = True
 								break
 				return (count, len(s_match_list))
@@ -204,16 +240,27 @@ class Match_Set:
 				s_match_list = [x for x in self.match_list if (x[1] == team or x[2] == team) and x[4] == patch]
 				for match in s_match_list:
 					found = False
-					for slot in (self.ban_pool + self.s_pick_pool):
+					bans = self.ban_pool
+					if ignore_bans != None:
+						bans = []
+					for slot in (bans + self.s_pick_pool):
 						if match[slot] == champ:
-							count += 1
+							if (slot not in self.ban_pool and role != None and match[self.pick_dict[slot]] == role) or role==None:
+								count += 1
+							elif slot in self.ban_pool and ignore_bans is None:
+								count += 1
 							found = True
 							break
 					if not found:
 						for slot in self.d_pick_pool:
-							champs = match[slot].split(",")
+							champs = match[slot].split(", ")
 							if champs[0] == champ or champs[1] == champ:
-								count += 1
+								if champs[0] == champ and ((role != None and match[self.pick_dict[str(slot)+".1"]] == role) or role==None):
+									count += 1
+								elif (role != None and match[self.pick_dict[str(slot)+".2"]] == role) or role==None:
+									count += 1
+								elif slot in self.ban_pool and ignore_bans is None:
+									count += 1
 								found = True
 								break
 				return (count, len(s_match_list))
@@ -231,6 +278,10 @@ class Match_Set:
 			old_percent = patch_percent
 			
 			print("		{0}: {1}/{2}	|	{3} ({4:+g})".format(patch_str, patch_stats[0], patch_stats[1], format(patch_percent, ".2f"), patch_delta))
+
+	def get_Champ_Percent_by_Patch(self, champ, patch):
+		patch_stats = self.get_Champ_Percent(champ, patch)
+		return format((patch_stats[0]/patch_stats[1]) * 100.00, ".2f")
 
 	# Implement patch/team functionality
 	def get_Picked_Champ_List(self):
@@ -373,7 +424,87 @@ class Match_Set:
 		# 	print("{:>12}{:>12}{:>12}".format(champ[0], champ[1], champ[2]))
 		print(tabulate([x[1:] for x in champ_arr], headers=["Champion", "Blue Count", "Blue Percentage", "Red Count", "Red Percentage", "Total Count", "Total Percentage"]))
 
+	def print_Role_Percent_by_Patch(self, role, start, limit, ignore_bans=None, ignore_champs=[]):
+		champ_pool = [x for x in sorted(list(set(self.get_Champs_by_Role(role)[0]))) if x not in ignore_champs]
+		main_arr = []
+		percent_arr = []
+		count_arr = []
+		for champ in champ_pool:
+			champ_arr = [champ]
+			champ_arr_p = [champ]
+			champ_arr_c = [champ]
+			old_percent = None
+			patch_strs = ["11."+str(x) for x in range(start, limit+1)]
+			for patch_str in patch_strs:
+				patch_stats = self.get_Champ_Percent(champ, patch_str, None, ignore_bans, role)
+				if patch_stats[1] != 0:
+					patch_percent = (patch_stats[0]/patch_stats[1]) * 100.00
+				else:
+					patch_percent = 0.00
+				if old_percent is None:
+					old_percent = patch_percent
+				patch_delta = round((patch_percent - old_percent), 2)
+				old_percent = patch_percent
+				champ_arr.append(format(patch_percent, ".2f"))
+				champ_arr_p.append(patch_delta)
+				champ_arr_c.append(patch_stats[0])
+			main_arr.append(champ_arr)
+			percent_arr.append(champ_arr_p)
+			count_arr.append(champ_arr_c)
+		patch_strs = ["{0} ({1})".format(x, self.get_Game_Count_by_Patch(x)) for x in patch_strs]
+		type_str = "or banned "
+		if ignore_bans != None:
+			type_str=""
+		print("\nCounts for Champs picked {5}as {0} in the {1} from Patch {2} to {3} during {4}:".format(role, self.league, patch_strs[0], patch_strs[-1], self.year, type_str))
+		print(tabulate(count_arr, headers=patch_strs))
+		print("\nPercent Presence for Champs picked {5}as {0} in the {1} from Patch {2} to {3} during {4}:".format(role, self.league, patch_strs[0], patch_strs[-1], self.year,type_str))
+		print(tabulate(main_arr, headers=patch_strs))
+		print("\nPercent Presence Change for Champs picked {5}as {0} in the {1} from Patch {2} to {3} during {4}:".format(role, self.league, patch_strs[0], patch_strs[-1], self.year,type_str))
+		print(tabulate(percent_arr, headers=patch_strs))
 
+	def get_Pick_Percent_Delta(self, champ, base, end, ignore_bans=None):
+		base_stats = self.get_Champ_Percent(champ, base, None, ignore_bans)
+		base_percent = (base_stats[0]/base_stats[1]) * 100.00
+		end_stats = self.get_Champ_Percent(champ, end, None, ignore_bans)
+		end_percent = (end_stats[0]/end_stats[1]) * 100.00
+		return(round((end_percent - base_percent), 2))
+
+	def print_Patch_Winners_by_Role(self, role, base, end, ignore_bans=None, ignore_champs=[]):
+		champ_pool = [x for x in sorted(list(set(self.get_Champs_by_Role(role)[0]))) if x not in ignore_champs]
+		main_arr = []
+		for champ in champ_pool:
+			champ_arr = [champ]
+			percent = self.get_Pick_Percent_Delta(champ, base, end, ignore_bans)
+			if percent != 0:
+				champ_arr.append(percent)
+				main_arr.append(champ_arr)
+		sorted_arr = sorted(main_arr, key=lambda x: (abs(x[1]), x[1]), reverse=True)
+		type_str = "/ban"
+		if ignore_bans:
+			type_str = ""
+		print("\nLargest Champ pick{5} delta as {0} in the {1} from Patch {2} to {3} during {4}:".format(role, self.league, base, end, self.year, type_str))
+		print(tabulate(sorted_arr, headers=["Champion", end]))
+
+	def get_Champ_Pick_Info_by_Patch(self, champ, start, limit, role, ignore_bans=None):
+		champ_arr = [champ]
+		champ_arr_p = [champ]
+		champ_arr_c = [champ]
+		old_percent = None
+		patch_strs = ["11."+str(x) for x in range(start, limit+1)]
+		for patch_str in patch_strs:
+			patch_stats = self.get_Champ_Percent(champ, patch_str, None, ignore_bans, role)
+			if patch_stats[1] != 0:
+				patch_percent = (patch_stats[0]/patch_stats[1]) * 100.00
+			else:
+				patch_percent = 0.00
+			if old_percent is None:
+				old_percent = patch_percent
+			patch_delta = round((patch_percent - old_percent), 2)
+			old_percent = patch_percent
+			champ_arr.append(format(patch_percent, ".2f"))
+			champ_arr_p.append(patch_delta)
+			champ_arr_c.append(patch_stats[0])
+		return(champ_arr, champ_arr_p, champ_arr_c)
 
 	def __init__(self, input, get=False):
 		self.match_list = []
@@ -381,6 +512,7 @@ class Match_Set:
 		self.ban_pool = [5,6,7,8,9,10,15,16,17,18]
 		self.s_pick_pool = [11,14,19,21]
 		self.d_pick_pool = [12,13,20]
+		self.pick_dict = {11:22, "13.1":23, "13.2":24, "20.1":25, "20.2":26, "12.1":27, "12.2":28, 14:29, 19:30, 21:31}
 		file_str = ""
 		league = ""
 		year = set()
@@ -459,6 +591,10 @@ def print_Count_Compare(c1, c2, n1="SET 1", n2="SET 2", term="SELECTIONS"):
 LCS_Set = Match_Set([["LCS", "2021", "Spring"]])
 LEC_Set = Match_Set([["LEC", "2021", "Spring"]])
 West_Set = Match_Set([["LCS", "2021", "Spring"], ["LEC", "2021", "Spring"]])
+LPL_Set = Match_Set([["LPL", "2021", "Spring"]])
+LCK_Set = Match_Set([["LCK", "2021", "Spring"]])
+East_Set = Match_Set([["LPL", "2021", "Spring"], ["LCK", "2021", "Spring"]])
+Global_Set = Match_Set([["LCS", "2021", "Spring"], ["LEC", "2021", "Spring"], ["LPL", "2021", "Spring"], ["LCK", "2021", "Spring"]])
 
 
 
@@ -475,17 +611,60 @@ West_Set = Match_Set([["LCS", "2021", "Spring"], ["LEC", "2021", "Spring"]])
 # print_Format_Count(Counter(LCS_Set.get_BPP1_Raw()), None, True)
 # print_Count_Compare(lcs_bpp1, lec_bpp1, "LCS", "LEC", "FIRST PICK")
 
-# print(LCS_Set.get_Champ_Percent("Kai'Sa", "11.4"))
-# print(LEC_Set.get_Champ_Percent("Kai'Sa", "11.4"))
+# print(LCS_Set.get_Champ_Percent("Kai'Sa", "11.4", None, True))
+# print(LEC_Set.get_Champ_Percent("Kai'Sa", "11.4", None, True))
 
 # LCS_Set.print_Champ_Percent_by_Patch("Kai'Sa", 2, 4)
 
+# print("LEC Game Counter Per Patch:")
+# for x in ["11.1", "11.2", "11.3", "11.4"]:
+# 	print("		{1}: {0}".format(LEC_Set.get_Game_Count_by_Patch(x), x))
+
 # pprint(LCS_Set.get_Picked_Champ_List())
-# pprint(LCS_Set.get_Champs_by_Role("Bot"))
+# champ_pool = set(LCS_Set.get_Champs_by_Role("Bot")[0])
+
+
+# LEC_Set.print_Role_Percent_by_Patch("Jungle", 1, 4)
+
+
+# print(LEC_Set.get_Pick_Percent_Delta("Seraphine", "11.1", "11.4"))
+# print(Global_Set.print_Patch_Winners_by_Role("Top", "11.2", "11.3", None, ["Pantheon", "Orianna", "Cassiopeia"]))
+
+# print(LEC_Set.get_Champ_Pick_Info_by_Patch("Kai'Sa", 1, 4, "Bot"))
+
+def print_Global_Champ_Comparison(champ_pool, ex_pool, role, leagues, globe, start, limit, ignore_bans=None):
+	tab_arr_count = []
+	tab_arr_main = []
+	tab_arr_delta = []
+	for champ in champ_pool:
+		if champ not in ex_pool:
+			for league in leagues:
+				champ_stats = league.get_Champ_Pick_Info_by_Patch(champ, start, limit, role, ignore_bans)
+				for sub_arr in champ_stats:
+					sub_arr[0] = sub_arr[0] + " ({0})".format(league.league)
+				tab_arr_count.append(champ_stats[2])
+				print(champ_stats[0])
+				if float(champ_stats[0][1]) > 20.00: tab_arr_main.append(champ_stats[0])
+				tab_arr_delta.append(champ_stats[1])
+	patch_strs = ["11."+str(x) for x in range(start, limit+1)]
+	patch_strs = ["{0} ({1})".format(x, globe.get_Game_Count_by_Patch(x)) for x in patch_strs]
+	# print("\ncounts:")
+	# print(tabulate(tab_arr_count, headers=patch_strs))
+	print("\npercents:")
+	print(tabulate(tab_arr_main, headers=patch_strs))
+	# print("\ndeltas:")
+	# print(tabulate(tab_arr_delta, headers=patch_strs))
+
+# jng_pool = sorted(list(set(Global_Set.get_Champs_by_Role("Jungle")[0])))
+# print_Global_Champ_Comparison(jng_pool, ["Seraphine", "Pantheon"],"Jungle", [LCS_Set, LEC_Set, LPL_Set, LCK_Set], Global_Set, 3, 3, True)
+
+
 # pprint(LCS_Set.print_Blue_vs_Red_by_Role("Bot"))
 # pprint(LEC_Set.print_Blue_vs_Red_by_Role("Top", None))
-# pprint(Counter(LCS_Set.get_Champs_by_Role("Bot", None,"Cloud9")[0]))
-test = Counter(LCS_Set.get_Champs_by_Role("Bot", None,"Cloud9")[0])
+# val_count = Counter(LCS_Set.get_Champs_by_Role("Bot")[0]).values()
+# pprint(sum(val_count))
+
+test = Counter(LCS_Set.get_Champs_by_Role("Jungle", None,"Cloud9")[0])
 print_Format_Count(test, None, True)
 
 # pprint(West_Set.print_Blue_vs_Red_by_Role("Bot"))
